@@ -1,6 +1,6 @@
 import { fetchPatchList } from './index'; // crawler/index.ts
 import { parsePatchDetail } from '../parser/index';
-// @ts-expect-error supabaseAdmin internal module
+//
 import { supabaseAdmin } from '../supabaseAdmin';
 // import { Database } from '../../types/database.types'; // Unused
 

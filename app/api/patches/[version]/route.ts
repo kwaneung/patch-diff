@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-// @ts-expect-error supabaseAdmin internal module
+//
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export const dynamic = 'force-dynamic';
