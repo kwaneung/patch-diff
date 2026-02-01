@@ -26,7 +26,7 @@ export function PatchCard({ patch }: PatchCardProps) {
           <div className="flex items-center text-sm text-muted-foreground mt-2">
             <CalendarIcon className="mr-1 h-4 w-4" />
             {patch.release_date
-              ? new Date(patch.release_date).toLocaleDateString()
+              ? new Date(patch.release_date).toLocaleDateString('ko-KR')
               : 'Unknown Date'}
           </div>
         </CardContent>

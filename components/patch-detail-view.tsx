@@ -61,7 +61,7 @@ export function PatchDetailView({ patch, items }: PatchDetailViewProps) {
         </Link>
         <h1 className="text-3xl font-bold tracking-tight">Patch {patch.version}</h1>
         <p className="text-muted-foreground mt-1">
-          {patch.title} • {patch.release_date ? new Date(patch.release_date).toLocaleDateString() : ''}
+          {patch.title} • {patch.release_date ? new Date(patch.release_date).toLocaleDateString('ko-KR') : ''}
         </p>
       </div>
 
