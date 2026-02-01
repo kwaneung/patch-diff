@@ -6,9 +6,11 @@ export const maxDuration = 60; // Allow longer timeout for crawling
 
 export async function GET(request: Request) {
   try {
-    // Optional: Add simple secret check to prevent abuse
-    // const authHeader = request.headers.get('authorization');
-    // if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) { ... }
+    // Secure the cron job
+    const authHeader = request.headers.get('authorization');
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     await crawlAndSavePatches();
     return NextResponse.json({ success: true, message: 'Crawler finished' });
