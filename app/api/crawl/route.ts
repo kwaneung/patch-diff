@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { crawlAndSavePatches } from '@/lib/crawler/save';
 
 export const dynamic = 'force-dynamic'; // Prevent caching
@@ -13,6 +14,7 @@ export async function GET(request: Request) {
     }
 
     await crawlAndSavePatches();
+    revalidatePath('/'); // 메인 페이지 캐시 무효화 → 새 패치 즉시 반영
     return NextResponse.json({ success: true, message: 'Crawler finished' });
   } catch (error) {
     console.error('Crawler failed:', error);
