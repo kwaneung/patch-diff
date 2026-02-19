@@ -22,10 +22,12 @@ export async function fetchPatchList(): Promise<PatchListUrl[]> {
 
     if (!href) return;
 
-    // Filter for patch note links
-    // Format: /ko-kr/news/game-updates/patch-26-2-notes/
-    // or /ko-kr/news/game-updates/patch-14-1-notes/
-    const match = href.match(/\/ko-kr\/news\/game-updates\/patch-(\d+)-(\d+)-notes/);
+    // Filter for LoL (Summoner's Rift) patch note links only
+    // Format (old): /ko-kr/news/game-updates/patch-26-2-notes/
+    // Format (new): /ko-kr/news/game-updates/league-of-legends-patch-26-4-notes
+    // Exclude TFT: teamfight-tactics-patch-*, tft-* etc.
+    if (/tft|teamfight-tactics/i.test(href)) return;
+    const match = href.match(/\/ko-kr\/news\/game-updates\/(?:league-of-legends-)?patch-(\d+)-(\d+)-notes/);
     
     // Additional check to ensure it's a patch note and not something else
     // e.g. TFT patch notes usually have 'tft' in url, but sometimes share format.
