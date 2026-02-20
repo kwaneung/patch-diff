@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { revalidatePath } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { crawlAndSavePatches } from '@/lib/crawler/save';
+import { getPatchesCacheTag } from '@/lib/data/patches';
 
-export const dynamic = 'force-dynamic'; // Prevent caching
 export const maxDuration = 60; // Allow longer timeout for crawling
 
 export async function GET(request: Request) {
@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     }
 
     await crawlAndSavePatches();
-    revalidatePath('/'); // 메인 페이지 캐시 무효화 → 새 패치 즉시 반영
+    revalidateTag(getPatchesCacheTag(), { expire: 0 }); // Cron 호출 시 즉시 만료
     return NextResponse.json({ success: true, message: 'Crawler finished' });
   } catch (error) {
     console.error('Crawler failed:', error);

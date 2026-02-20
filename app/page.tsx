@@ -1,23 +1,5 @@
 import { PatchCard } from '@/components/patch-card';
-//
-import { supabaseAdmin } from '@/lib/supabaseAdmin';
-
-export const revalidate = 3600; // Revalidate every hour
-
-async function getPatches() {
-  const { data: patches, error } = await supabaseAdmin
-    .from('patches')
-    .select('id, version, title, release_date')
-    .order('release_date', { ascending: false })
-    .order('version', { ascending: false })
-    .limit(50); // Get latest 50 patches
-
-  if (error) {
-    console.error('Error fetching patches:', error);
-    return [];
-  }
-  return patches;
-}
+import { getPatches } from '@/lib/data/patches';
 
 export default async function Home() {
   const patches = await getPatches();
