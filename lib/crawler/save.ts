@@ -1,29 +1,36 @@
-import { fetchPatchList } from './index'; // crawler/index.ts
+import { fetchPatchList, fetchTftPatchList } from './index';
 import { parsePatchDetail } from '../parser/index';
-//
+import { parseTftPatchDetail } from '../parser/tft';
 import { supabaseAdmin } from '../supabaseAdmin';
-// import { Database } from '../../types/database.types'; // Unused
 
-export async function crawlAndSavePatches() {
-  console.log('Starting crawler...');
-  
-  // 1. Fetch List
-  const patches = await fetchPatchList();
-  console.log(`Found ${patches.length} patches.`);
+type GameSlug = 'league-of-legends' | 'teamfight-tactics';
 
-  // 2. Get existing patches to avoid duplicates
-  const { data: existingPatches, error } = await supabaseAdmin
-    .from('patches')
-    .select('version');
+async function crawlAndSaveForGame(
+  gameSlug: GameSlug,
+  fetchList: () => Promise<{ version: string; url: string; date: string; title: string }[]>,
+  parseDetail: (html: string) => import('./types').PatchChangeParsed[]
+) {
+  const patches = await fetchList();
+  console.log(`[${gameSlug}] Found ${patches.length} patches.`);
 
-  if (error) {
-    console.error('Error fetching existing patches:', error);
+  const { data: game } = await supabaseAdmin
+    .from('games')
+    .select('id')
+    .eq('slug', gameSlug)
+    .single();
+
+  if (!game) {
+    console.error(`Game "${gameSlug}" not found in DB.`);
     return;
   }
 
-  const existingVersions = new Set(existingPatches?.map(p => p.version));
+  const { data: existingPatches } = await supabaseAdmin
+    .from('patches')
+    .select('version')
+    .eq('game_id', game.id);
 
-  // 3. Process new patches
+  const existingVersions = new Set(existingPatches?.map((p) => p.version));
+
   for (const patch of patches) {
     if (existingVersions.has(patch.version)) {
       console.log(`Patch ${patch.version} already exists. Skipping.`);
@@ -40,22 +47,9 @@ export async function crawlAndSavePatches() {
     }
     const html = await response.text();
     
-    // Parse
-    const parsedItems = parsePatchDetail(html);
+    // Parse (uses game-specific parser: parsePatchDetail for LoL, parseTftPatchDetail for TFT)
+    const parsedItems = parseDetail(html);
     console.log(`  Parsed ${parsedItems.length} items.`);
-
-    // Save to DB
-    // Get Game ID (assume LoL exists)
-    const { data: game } = await supabaseAdmin
-        .from('games')
-        .select('id')
-        .eq('slug', 'league-of-legends')
-        .single();
-    
-    if (!game) {
-        console.error('Game "League of Legends" not found in DB.');
-        return;
-    }
 
     // Insert Patch
     const { data: patchData, error: patchError } = await supabaseAdmin
@@ -115,6 +109,22 @@ export async function crawlAndSavePatches() {
             }
         }
     }
-    console.log(`  Saved Patch ${patch.version} successfully.`);
+    console.log(`  [${gameSlug}] Saved Patch ${patch.version} successfully.`);
   }
+
+  // Update crawler_runs metadata
+  const now = new Date().toISOString();
+  await supabaseAdmin
+    .from('crawler_runs')
+    .upsert(
+      { game_id: game.id, last_crawled_at: now },
+      { onConflict: 'game_id', ignoreDuplicates: false }
+    );
+}
+
+export async function crawlAndSavePatches() {
+  console.log('Starting crawler...');
+
+  await crawlAndSaveForGame('league-of-legends', fetchPatchList, parsePatchDetail);
+  await crawlAndSaveForGame('teamfight-tactics', fetchTftPatchList, parseTftPatchDetail);
 }

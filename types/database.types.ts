@@ -141,6 +141,34 @@ export interface Database {
           }
         ]
       }
+      crawler_runs: {
+        Row: {
+          id: string
+          game_id: string
+          last_crawled_at: string
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          game_id: string
+          last_crawled_at: string
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          game_id?: string
+          last_crawled_at?: string
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crawler_runs_game_id_fkey"
+            columns: ["game_id"]
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never

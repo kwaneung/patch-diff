@@ -1,16 +1,36 @@
 import { cacheLife, cacheTag } from 'next/cache';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
-const CACHE_TAG = 'patches';
+export type GameMode = 'summoners-rift' | 'tft';
 
-export async function getPatches() {
+const GAME_SLUG_MAP: Record<GameMode, string> = {
+  'summoners-rift': 'league-of-legends',
+  tft: 'teamfight-tactics',
+};
+
+function cacheTagForMode(mode: GameMode): string {
+  return `patches-${mode}`;
+}
+
+export async function getPatches(gameMode: GameMode = 'summoners-rift') {
   'use cache';
-  cacheTag(CACHE_TAG);
-  cacheLife('hours'); // 1시간 revalidate (stale-while-revalidate)
+  const tag = cacheTagForMode(gameMode);
+  cacheTag(tag);
+  cacheLife('hours');
+
+  const slug = GAME_SLUG_MAP[gameMode];
+  const { data: game } = await supabaseAdmin
+    .from('games')
+    .select('id')
+    .eq('slug', slug)
+    .single();
+
+  if (!game) return [];
 
   const { data: patches, error } = await supabaseAdmin
     .from('patches')
     .select('id, version, title, release_date')
+    .eq('game_id', game.id)
     .order('release_date', { ascending: false })
     .order('version', { ascending: false })
     .limit(50);
@@ -22,14 +42,25 @@ export async function getPatches() {
   return patches;
 }
 
-export async function getPatchData(version: string) {
+export async function getPatchData(version: string, gameMode: GameMode = 'summoners-rift') {
   'use cache';
-  cacheTag(CACHE_TAG, `patch-${version}`);
+  const tag = cacheTagForMode(gameMode);
+  cacheTag(tag, `patch-${gameMode}-${version}`);
   cacheLife('hours');
+
+  const slug = GAME_SLUG_MAP[gameMode];
+  const { data: game } = await supabaseAdmin
+    .from('games')
+    .select('id')
+    .eq('slug', slug)
+    .single();
+
+  if (!game) return null;
 
   const { data: patch } = await supabaseAdmin
     .from('patches')
     .select('id, version, title, release_date')
+    .eq('game_id', game.id)
     .eq('version', version)
     .single();
 
@@ -55,6 +86,6 @@ export async function getPatchData(version: string) {
   return { patch, items: items || [] };
 }
 
-export function getPatchesCacheTag() {
-  return CACHE_TAG;
+export function getPatchesCacheTag(gameMode?: GameMode): string {
+  return gameMode ? cacheTagForMode(gameMode) : 'patches-summoners-rift';
 }
