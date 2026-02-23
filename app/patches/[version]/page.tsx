@@ -10,19 +10,22 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  const [lolPatches, tftPatches] = await Promise.all([
+  const [lolPatches, tftPatches, aramPatches] = await Promise.all([
     getPatches('summoners-rift'),
     getPatches('tft'),
+    getPatches('aram-mayhem'),
   ]);
   const lol = lolPatches.slice(0, 5).map((p) => ({ version: p.version }));
   const tft = tftPatches.slice(0, 5).map((p) => ({ version: p.version }));
-  return [...lol, ...tft];
+  const aram = aramPatches.slice(0, 5).map((p) => ({ version: p.version }));
+  return [...lol, ...tft, ...aram];
 }
 
 async function PatchDetailContent({ params, searchParams }: PageProps) {
   const { version } = await params;
   const { mode } = await searchParams;
-  const gameMode: GameMode = mode === 'tft' ? 'tft' : 'summoners-rift';
+  const gameMode: GameMode =
+    mode === 'tft' ? 'tft' : mode === 'aram-mayhem' ? 'aram-mayhem' : 'summoners-rift';
   const data = await getPatchData(version, gameMode);
 
   if (!data) {

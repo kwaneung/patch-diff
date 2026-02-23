@@ -1,7 +1,7 @@
 export interface PatchListUrl {
   version: string;
   url: string;
-  date: string;
+  date: string | null; // game-updates 카드 ISO 추출 실패 시 null
   title: string;
 }
 

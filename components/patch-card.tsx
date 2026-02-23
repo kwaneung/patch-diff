@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CalendarIcon } from 'lucide-react';
+import { formatReleaseDateKst } from '@/lib/format';
 import type { GameMode } from '@/lib/data/patches';
 
 interface PatchCardProps {
@@ -15,12 +16,17 @@ interface PatchCardProps {
 }
 
 export function PatchCard({ patch, gameMode = 'summoners-rift' }: PatchCardProps) {
-  const href = gameMode === 'tft' ? `/patches/${patch.version}?mode=tft` : `/patches/${patch.version}`;
+  const href =
+    gameMode === 'tft'
+      ? `/patches/${patch.version}?mode=tft`
+      : gameMode === 'aram-mayhem'
+        ? `/patches/${patch.version}?mode=aram-mayhem`
+        : `/patches/${patch.version}`;
   return (
     <Link href={href}>
       <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-zinc-200 dark:border-zinc-800">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-xl font-bold">
+          <CardTitle className="text-lg sm:text-xl font-bold">
             Patch {patch.version}
           </CardTitle>
           <Badge variant="outline">{patch.title || 'Update'}</Badge>
@@ -28,9 +34,7 @@ export function PatchCard({ patch, gameMode = 'summoners-rift' }: PatchCardProps
         <CardContent>
           <div className="flex items-center text-sm text-muted-foreground mt-2">
             <CalendarIcon className="mr-1 h-4 w-4" />
-            {patch.release_date
-              ? new Date(patch.release_date).toLocaleDateString('ko-KR')
-              : 'Unknown Date'}
+            {formatReleaseDateKst(patch.release_date) || 'Unknown Date'}
           </div>
         </CardContent>
       </Card>

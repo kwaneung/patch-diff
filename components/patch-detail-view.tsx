@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PatchChangeRow } from "./patch-change-row";
 import { cn } from "@/lib/utils";
+import { formatReleaseDateKst } from "@/lib/format";
 import Link from "next/link";
 import { ChevronLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -48,6 +49,9 @@ function getCategoryLabel(cat: string): string {
     trait: "특성",
     unit: "유닛",
     augment: "증강",
+    augment_set: "증강 세트",
+    progress_track: "진척도 트랙",
+    bugfix: "버그 수정",
   };
   return map[cat] ?? cat;
 }
@@ -127,14 +131,12 @@ export function PatchDetailView({ patch, items, gameMode = "summoners-rift" }: P
             <ChevronLeft className="h-4 w-4 mr-2" /> Back to List
           </Button>
         </Link>
-        <h1 className="text-3xl font-bold tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
           Patch {patch.version}
         </h1>
         <p className="text-muted-foreground mt-1">
           {patch.title} •{" "}
-          {patch.release_date
-            ? new Date(patch.release_date).toLocaleDateString("ko-KR")
-            : ""}
+          {formatReleaseDateKst(patch.release_date)}
         </p>
       </div>
 

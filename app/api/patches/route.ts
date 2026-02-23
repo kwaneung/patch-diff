@@ -10,8 +10,7 @@ export async function GET(request: Request) {
   const { data, error, count } = await supabaseAdmin
     .from('patches')
     .select('*', { count: 'exact' })
-    .order('release_date', { ascending: false })
-    .order('version', { ascending: false }) // Secondary sort
+    .order('version', { ascending: false })
     .range((page - 1) * limit, page * limit - 1);
 
   if (error) {

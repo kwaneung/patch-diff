@@ -1,11 +1,12 @@
 import { cacheLife, cacheTag } from 'next/cache';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
-export type GameMode = 'summoners-rift' | 'tft';
+export type GameMode = 'summoners-rift' | 'tft' | 'aram-mayhem';
 
 const GAME_SLUG_MAP: Record<GameMode, string> = {
   'summoners-rift': 'league-of-legends',
   tft: 'teamfight-tactics',
+  'aram-mayhem': 'aram-mayhem',
 };
 
 function cacheTagForMode(mode: GameMode): string {
@@ -27,11 +28,11 @@ export async function getPatches(gameMode: GameMode = 'summoners-rift') {
 
   if (!game) return [];
 
+  // version 1차 정렬: 날짜가 null/부정확해도 패치 순서 보장
   const { data: patches, error } = await supabaseAdmin
     .from('patches')
     .select('id, version, title, release_date')
     .eq('game_id', game.id)
-    .order('release_date', { ascending: false })
     .order('version', { ascending: false })
     .limit(50);
 
