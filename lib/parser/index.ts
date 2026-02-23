@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import { PatchChangeParsed } from '../crawler/types'; // Correct import path
+import { PatchChangeParsed } from '../crawler/types';
 import { parseChangeLine, categorizeChange, determineOverallCategory, cleanText } from './utils';
 
 /** Map h2 section text to category. Supports Korean and English. */
@@ -19,7 +19,8 @@ function sectionUsesH4Entries(sectionText: string): boolean {
 
 function parseEntryFromSiblings(
   $: cheerio.CheerioAPI,
-  $start: cheerio.Cheerio<cheerio.Element>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- cheerio 1.x: Element not exported, AnyNode from domhandler
+  $start: cheerio.Cheerio<any>,
   stopTags: string[],
   isChampionStyle: boolean
 ): { changes: { type: 'BUFF' | 'NERF' | 'ADJUST'; attribute: string; before: string; after: string }[] } {
@@ -56,18 +57,20 @@ export function parsePatchDetail(html: string): PatchChangeParsed[] {
   const items: PatchChangeParsed[] = [];
 
   let currentSection = '';
-  const $container = $('#patch-notes-container').length ? $('#patch-notes-container') : $.root();
-  const stopTags = ['h2', 'h3', 'h4'];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- cheerio 1.x: Document|Element union breaks .find()
+  const $container = ($('#patch-notes-container').length ? $('#patch-notes-container') : $.root()) as cheerio.Cheerio<any>;
 
   // Champions: h2 > h3.change-title (name) > h4 (ability) > ul > li
   // Items/System: h2 > h4.change-detail-title (name) > ul > li  (no h3)
-  $container.find('h2, h3.change-title, h4.change-detail-title').each((_, el) => {
-    const $el = $(el);
-    const tag = el.tagName?.toLowerCase();
+  const $headings = $container.find('h2, h3.change-title, h4.change-detail-title');
+  for (let i = 0; i < $headings.length; i++) {
+    const el = $headings[i];
+    const $el = $headings.eq(i);
+    const tag = el?.tagName?.toLowerCase();
 
     if (tag === 'h2') {
       currentSection = cleanText($el.text());
-      return;
+      continue;
     }
 
     if (tag === 'h3') {
@@ -91,7 +94,7 @@ export function parsePatchDetail(html: string): PatchChangeParsed[] {
           summary: convertChangesToSummary(changes)
         });
       }
-      return;
+      continue;
     }
 
     if (tag === 'h4' && sectionUsesH4Entries(currentSection)) {
@@ -102,7 +105,7 @@ export function parsePatchDetail(html: string): PatchChangeParsed[] {
         const strongText = cleanText($next.text());
         if (strongText && (name === '아이템' || name === 'Item' || !name)) name = strongText;
       }
-      if (!name) return;
+      if (!name) continue;
 
       const category = sectionToCategory(currentSection);
       const { changes } = parseEntryFromSiblings($, $el, ['h2', 'h3', 'h4'], false);
@@ -123,7 +126,7 @@ export function parsePatchDetail(html: string): PatchChangeParsed[] {
         });
       }
     }
-  });
+  }
 
   return items;
 }
