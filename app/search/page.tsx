@@ -55,8 +55,8 @@ async function SearchContent({ q, mode }: SearchContentProps) {
   const results = await getSearchResults(q, mode);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-2">
+    <div className="space-y-[1.5rem]">
+      <div className="flex flex-col gap-[0.5rem]">
         <p className="text-muted-foreground">
           &quot;{q}&quot; 검색 결과 ({MODE_LABELS[mode]})
         </p>
@@ -67,14 +67,14 @@ async function SearchContent({ q, mode }: SearchContentProps) {
       </div>
 
       {results.length === 0 ? (
-        <div className="text-center py-16 text-muted-foreground">
+        <div className="text-center py-[4rem] text-muted-foreground">
           검색 결과가 없습니다. 다른 검색어로 시도해 보세요.
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-[1.5rem]">
           {results.map((group) => (
             <Card key={group.patchVersion} className="overflow-hidden">
-              <CardHeader className="bg-muted/30 py-4">
+              <CardHeader className="bg-muted/30 py-[1rem]">
                 <Link
                   href={
                     mode === 'tft'
@@ -92,12 +92,12 @@ async function SearchContent({ q, mode }: SearchContentProps) {
                   {formatReleaseDateKst(group.patchReleaseDate)}
                 </p>
               </CardHeader>
-              <CardContent className="pt-4">
-                <ul className="space-y-3">
+              <CardContent className="pt-[1rem]">
+                <ul className="space-y-[0.75rem]">
                   {group.items.map((item) => (
                     <li
                       key={item.id}
-                      className="flex flex-wrap items-start gap-2 rounded-lg border p-3"
+                      className="flex flex-wrap items-start gap-[0.5rem] rounded-lg border p-[0.75rem]"
                     >
                       <span className="font-medium">{item.name}</span>
                       <Badge variant="outline" className="text-xs">
@@ -130,11 +130,11 @@ async function SearchPageInner({ searchParams }: SearchPageInnerProps) {
     params.mode === 'tft' ? 'tft' : params.mode === 'aram-mayhem' ? 'aram-mayhem' : 'summoners-rift';
 
   return (
-    <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
-      <div className="mb-8">
+    <div className="@container w-full max-w-5xl mx-auto py-[2.5rem] px-[1rem] @[40rem]:px-[1.5rem] @[64rem]:px-[2rem]">
+      <div className="mb-[2rem]">
         <Link
           href={mode === 'tft' ? '/?mode=tft' : mode === 'aram-mayhem' ? '/?mode=aram-mayhem' : '/'}
-          className="inline-block mb-4"
+          className="inline-block mb-[1rem]"
         >
           <Button
             variant="ghost"
@@ -147,7 +147,7 @@ async function SearchPageInner({ searchParams }: SearchPageInnerProps) {
             패치 목록으로
           </Button>
         </Link>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-4">
+        <h1 className="text-[1.5rem] @[40rem]:text-[1.875rem] font-bold tracking-tight mb-[1rem]">
           전체 패치 검색
         </h1>
         <SearchModeSelector currentMode={mode} searchQuery={q} />
@@ -156,7 +156,7 @@ async function SearchPageInner({ searchParams }: SearchPageInnerProps) {
       {q ? (
         <SearchContent q={q} mode={mode} />
       ) : (
-        <div className="text-center py-16 text-muted-foreground">
+        <div className="text-center py-[4rem] text-muted-foreground">
           검색어를 입력해 주세요. 메인 화면의 검색창에서 검색할 수 있습니다.
         </div>
       )}
@@ -172,7 +172,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
   return (
     <Suspense
       fallback={
-        <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
+        <div className="@container w-full max-w-5xl mx-auto py-[2.5rem] px-[1rem] @[40rem]:px-[1.5rem] @[64rem]:px-[2rem]">
           <div className="py-20 text-center text-muted-foreground animate-pulse">
             로딩 중...
           </div>

@@ -39,7 +39,7 @@ async function PatchDetailContent({ params, searchParams }: PageProps) {
 
 export default function Page(props: PageProps) {
   return (
-    <Suspense fallback={<div className="container mx-auto py-6 animate-pulse">Loading...</div>}>
+    <Suspense fallback={<div className="@container w-full max-w-5xl mx-auto py-[1.5rem] px-[1rem] @[40rem]:px-[1.5rem] @[64rem]:px-[2rem] animate-pulse text-center text-muted-foreground">로딩 중...</div>}>
       <PatchDetailContent {...props} />
     </Suspense>
   );

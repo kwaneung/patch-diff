@@ -17,13 +17,13 @@ export function ModeSelector() {
   const current = (modeParam === "tft" ? "tft" : modeParam === "aram-mayhem" ? "aram-mayhem" : "summoners-rift") as GameMode;
 
   return (
-    <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 p-1 rounded-lg bg-muted/50 w-full sm:w-fit max-w-md sm:max-w-none mx-auto">
+    <div className="flex flex-wrap justify-center gap-[0.375rem] @[40rem]:gap-[0.5rem] p-[0.25rem] rounded-lg bg-muted/50 w-full @[40rem]:w-fit max-w-[28rem] @[40rem]:max-w-none mx-auto">
       {MODES.map(({ value, label }) => (
         <Link
           key={value}
           href={value === "summoners-rift" ? "/" : `/?mode=${value}`}
           className={cn(
-            "px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors",
+            "px-[0.75rem] py-[0.375rem] @[40rem]:px-[1rem] @[40rem]:py-[0.5rem] rounded-md text-xs @[40rem]:text-sm font-medium transition-colors min-h-[2.75rem] min-w-[2.75rem] flex items-center justify-center",
             current === value
               ? "bg-background shadow text-foreground"
               : "text-muted-foreground hover:text-foreground"

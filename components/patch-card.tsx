@@ -25,14 +25,14 @@ export function PatchCard({ patch, gameMode = 'summoners-rift' }: PatchCardProps
   return (
     <Link href={href}>
       <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-zinc-200 dark:border-zinc-800">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-lg sm:text-xl font-bold">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-[0.5rem]">
+          <CardTitle className="text-lg @[40rem]:text-xl font-bold">
             Patch {patch.version}
           </CardTitle>
           <Badge variant="outline">{patch.title || 'Update'}</Badge>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center text-sm text-muted-foreground mt-2">
+          <div className="flex items-center text-sm text-muted-foreground mt-[0.5rem]">
             <CalendarIcon className="mr-1 h-4 w-4" />
             {formatReleaseDateKst(patch.release_date) || 'Unknown Date'}
           </div>

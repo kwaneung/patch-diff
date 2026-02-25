@@ -30,7 +30,7 @@ export function MainSearchInput() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-xl mx-auto flex gap-2 px-2 sm:px-0"
+      className="w-full max-w-[36rem] mx-auto flex gap-[0.5rem] px-[0.5rem] @[40rem]:px-0"
     >
       <Input
         type="search"

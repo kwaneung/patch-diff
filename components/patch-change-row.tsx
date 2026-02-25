@@ -17,14 +17,14 @@ export function PatchChangeRow({ change }: PatchChangeRowProps) {
   const isNerf = change.change_type === "NERF";
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center py-2 border-b last:border-0 border-border">
+    <div className="flex flex-col @[40rem]:flex-row @[40rem]:items-center py-[0.5rem] border-b last:border-0 border-border">
       {/* Attribute Name */}
-      <div className="w-full sm:w-1/3 font-medium text-sm mb-1 sm:mb-0 text-muted-foreground">
+      <div className="w-full @[40rem]:w-1/3 font-medium text-sm mb-[0.25rem] @[40rem]:mb-0 text-muted-foreground">
         {change.attribute || "General"}
       </div>
 
       {/* Values */}
-      <div className="w-full sm:w-2/3 flex flex-col sm:flex-row items-start sm:items-center gap-2 text-sm">
+      <div className="w-full @[40rem]:w-2/3 flex flex-col @[40rem]:flex-row items-start @[40rem]:items-center gap-[0.5rem] text-sm">
         {/* Description Only Case */}
         {change.description && !change.before_value && !change.after_value ? (
           <span className="text-foreground">{change.description}</span>
@@ -39,7 +39,7 @@ export function PatchChangeRow({ change }: PatchChangeRowProps) {
 
             {/* Arrow */}
             {change.before_value && change.after_value && (
-              <ArrowRight className="h-4 w-4 text-muted-foreground mx-1 hidden sm:block" />
+              <ArrowRight className="h-4 w-4 text-muted-foreground mx-[0.25rem] hidden @[40rem]:block" />
             )}
 
             {/* After Value */}
@@ -60,7 +60,7 @@ export function PatchChangeRow({ change }: PatchChangeRowProps) {
 
             {/* Description appended if exists */}
             {change.description && (
-              <span className="text-xs text-muted-foreground ml-2">
+              <span className="text-xs text-muted-foreground ml-[0.5rem]">
                 ({change.description})
               </span>
             )}
