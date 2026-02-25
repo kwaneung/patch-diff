@@ -20,7 +20,9 @@ function h4ToCategory(h4Text: string): string {
 export function parseTftPatchDetail(html: string): PatchChangeParsed[] {
   const $ = cheerio.load(html);
   const items: PatchChangeParsed[] = [];
-  const $container = ($('#patch-notes-container').length ? $('#patch-notes-container') : $.root()) as cheerio.Cheerio<cheerio.Element>;
+  // cheerio 1.x: Element not exported; use any for container type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const $container = ($('#patch-notes-container').length ? $('#patch-notes-container') : $.root()) as cheerio.Cheerio<any>;
 
   // TFT structure: h2 (체계 변경 사항, 대규모 변경 사항 등) > h4.change-detail-title (특성, 유닛, 아이템, 증강) > ul > li
   // Iterate h2 + h4 in document order, use h4 text for category (like LoL uses h2 for section)
