@@ -92,7 +92,6 @@ export async function getSearchResults(
   if (!query) return [];
 
   const filtered = (itemsWithPatches || []).filter((item) => {
-    const patch = item.patches as { version: string; title: string; release_date: string | null };
     const changes = (item.patch_changes || []) as {
       attribute: string | null;
       description: string | null;

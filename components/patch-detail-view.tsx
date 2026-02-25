@@ -63,16 +63,19 @@ export function PatchDetailView({ patch, items, gameMode = "summoners-rift" }: P
     useState<CategoryFilterType>("ALL");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Sync from URL on mount
+  // Sync from URL when searchParams change (e.g. back/forward)
   useEffect(() => {
     const type = searchParams.get("type");
     const category = searchParams.get("category");
-    if (type && ["BUFF", "NERF", "ADJUST"].includes(type)) {
-      setFilter(type as FilterType);
-    }
-    if (category) {
-      setCategoryFilter(category);
-    }
+    const timer = setTimeout(() => {
+      if (type && ["BUFF", "NERF", "ADJUST"].includes(type)) {
+        setFilter(type as FilterType);
+      }
+      if (category) {
+        setCategoryFilter(category);
+      }
+    }, 0);
+    return () => clearTimeout(timer);
   }, [searchParams]);
 
   const setFilterAndUrl = (f: FilterType) => {

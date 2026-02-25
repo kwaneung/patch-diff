@@ -14,7 +14,7 @@ async function main() {
   // Based on common knowledge of LoL site, they are usually in a grid or list.
   // We'll look for 'a' tags that contain '패치 노트' in their text or finding article tags.
   
-  const items: any[] = [];
+  const items: { text: string; href: string; class?: string }[] = [];
 
   $('a').each((_, el) => {
     const href = $(el).attr('href');

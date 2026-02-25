@@ -1,6 +1,4 @@
 import { parsePatchDetail } from '../lib/parser/index';
-// @ts-ignore
-import * as cheerio from 'cheerio';
 
 async function main() {
   const url = 'https://www.leagueoflegends.com/ko-kr/news/game-updates/league-of-legends-patch-26-4-notes';
