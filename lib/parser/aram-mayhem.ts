@@ -34,8 +34,9 @@ export function parseAramMayhemFromLolPatch(html: string): PatchChangeParsed[] {
   const $ = cheerio.load(html);
   const items: PatchChangeParsed[] = [];
 
-  const $container = $('#patch-notes-container').length ? $('#patch-notes-container') : $.root();
-  const $allHeadings = $container.find('h2, h4.change-detail-title');
+  const $allHeadings = $('#patch-notes-container').length
+    ? $('#patch-notes-container').find('h2, h4.change-detail-title')
+    : $('h2, h4.change-detail-title');
 
   let insideAramMayhem = false;
   const seenSections = new Set<string>();

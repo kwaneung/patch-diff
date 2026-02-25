@@ -35,7 +35,7 @@ interface PatchDetailViewProps {
     release_date: string | null;
   };
   items: PatchItem[];
-  gameMode?: "summoners-rift" | "tft";
+  gameMode?: "summoners-rift" | "tft" | "aram-mayhem";
 }
 
 type FilterType = "ALL" | "BUFF" | "NERF" | "ADJUST";
@@ -123,7 +123,7 @@ export function PatchDetailView({ patch, items, gameMode = "summoners-rift" }: P
     <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8 max-w-5xl">
       {/* Header */}
       <div className="mb-6">
-        <Link href={gameMode === "tft" ? "/?mode=tft" : "/"} passHref>
+        <Link href={gameMode && gameMode !== "summoners-rift" ? `/?mode=${gameMode}` : "/"} passHref>
           <Button
             variant="ghost"
             className="mb-2 pl-0 hover:bg-transparent hover:text-primary"
