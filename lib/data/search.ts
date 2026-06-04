@@ -1,4 +1,5 @@
 import { cacheLife, cacheTag } from 'next/cache';
+import { comparePatchVersions } from '@/lib/patch-version';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import type { GameMode } from '@/lib/data/patches';
 
@@ -150,12 +151,7 @@ export async function getSearchResults(
   }
 
   const groups = Array.from(patchMap.values());
-  groups.sort((a, b) => {
-    const [aMaj, aMin] = a.patchVersion.split('.').map(Number);
-    const [bMaj, bMin] = b.patchVersion.split('.').map(Number);
-    if (aMaj !== bMaj) return bMaj - aMaj;
-    return bMin - aMin;
-  });
+  groups.sort((a, b) => comparePatchVersions(a.patchVersion, b.patchVersion));
 
   return groups;
 }

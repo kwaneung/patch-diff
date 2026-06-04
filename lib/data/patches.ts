@@ -1,4 +1,5 @@
 import { cacheLife, cacheTag } from 'next/cache';
+import { sortPatchesByVersionDesc } from '@/lib/patch-version';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export type GameMode = 'summoners-rift' | 'tft' | 'aram-mayhem';
@@ -28,19 +29,17 @@ export async function getPatches(gameMode: GameMode = 'summoners-rift') {
 
   if (!game) return [];
 
-  // version 1차 정렬: 날짜가 null/부정확해도 패치 순서 보장
   const { data: patches, error } = await supabaseAdmin
     .from('patches')
     .select('id, version, title, release_date')
-    .eq('game_id', game.id)
-    .order('version', { ascending: false })
-    .limit(50);
+    .eq('game_id', game.id);
 
   if (error) {
     console.error('Error fetching patches:', error);
     return [];
   }
-  return patches;
+
+  return sortPatchesByVersionDesc(patches ?? []).slice(0, 50);
 }
 
 export async function getPatchData(version: string, gameMode: GameMode = 'summoners-rift') {
